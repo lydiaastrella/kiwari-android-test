@@ -1,55 +1,175 @@
 package com.example.mychatapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import de.hdodenhof.circleimageview.CircleImageView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        public static class MessageViewHolder extends RecyclerView.ViewHolder {
+            TextView messageTextView;
+            ImageView messageImageView;
+            TextView messengerTextView;
+            CircleImageView messengerImageView;
+
+            public MessageViewHolder(View v) {
+                super(v);
+                messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
+                messageImageView = (ImageView) itemView.findViewById(R.id.messageImageView);
+                messengerTextView = (TextView) itemView.findViewById(R.id.messengerTextView);
+                messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
             }
-        });
-    }
+        }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+        private static final String TAG = "MainActivity";
+        public static final String MESSAGES_CHILD = "messages";
+        private static final int REQUEST_INVITE = 1;
+        private static final int REQUEST_IMAGE = 2;
+        private static final String LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif";
+        public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
+        public static final String ANONYMOUS = "anonymous";
+        private static final String MESSAGE_SENT_EVENT = "message_sent";
+        private String mUsername;
+        private String mPhotoUrl;
+        private SharedPreferences mSharedPreferences;
+        private GoogleApiClient mGoogleApiClient;
+        private static final String MESSAGE_URL = "http://friendlychat.firebase.google.com/message/";
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        private Button mSendButton;
+        private RecyclerView mMessageRecyclerView;
+        private LinearLayoutManager mLinearLayoutManager;
+        private ProgressBar mProgressBar;
+        private EditText mMessageEditText;
+        private ImageView mAddMessageImageView;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        // Firebase instance variables
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            // Set default username is anonymous.
+            mUsername = ANONYMOUS;
+
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API)
+                    .build();
+
+            // Initialize ProgressBar and RecyclerView.
+            mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+            mMessageRecyclerView = (RecyclerView) findViewById(R.id.messageRecyclerView);
+            mLinearLayoutManager = new LinearLayoutManager(this);
+            mLinearLayoutManager.setStackFromEnd(true);
+            mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+
+            mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+
+            mMessageEditText = (EditText) findViewById(R.id.messageEditText);
+            mMessageEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (charSequence.toString().trim().length() > 0) {
+                        mSendButton.setEnabled(true);
+                    } else {
+                        mSendButton.setEnabled(false);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+
+            mSendButton = (Button) findViewById(R.id.sendButton);
+            mSendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Send messages on click.
+                }
+            });
+
+            mAddMessageImageView = (ImageView) findViewById(R.id.addMessageImageView);
+            mAddMessageImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Select image for image message on click.
+                }
+            });
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            // Check if user is signed in.
+            // TODO: Add code to check if user is signed in.
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+        }
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_main, menu);
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+            // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+            // be available.
+            Log.d(TAG, "onConnectionFailed:" + connectionResult);
+            Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+        }
 }
