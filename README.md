@@ -1,6 +1,6 @@
 # kiwari-android-test
 ## App Screenshots
-![Sign In Page](/screenshot/sign in.png)
-Format: ![Alt Text](url)
-![Chat Room Page](/screenshot/chat room.png)
-Format: ![Alt Text](url)
+# Sign In Page
+![alt text](https://github.com/lydiaastrella/kiwari-android-test/tree/master/screenshot/signin.jpg?raw=true)
+# Chat Room Page
+![alt text](https://github.com/lydiaastrella/kiwari-android-test/tree/master/screenshot/chatroom.jpg?raw=true)
