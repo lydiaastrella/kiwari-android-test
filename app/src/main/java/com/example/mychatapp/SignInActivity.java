@@ -1,8 +1,5 @@
 package com.example.mychatapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,23 +8,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = "SignInActivity";
 
-    private Button btnSignIn;
     private EditText edtEmail, edtPassword;
 
     private FirebaseAuth mFirebaseAuth;
@@ -38,7 +33,7 @@ public class SignInActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_sign_in);
 
         // Assign fields
-        btnSignIn = findViewById(R.id.btn_sign_in);
+        Button btnSignIn = findViewById(R.id.btn_sign_in);
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
 
@@ -51,10 +46,8 @@ public class SignInActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_sign_in:
-                signIn(edtEmail.getText().toString(), edtPassword.getText().toString());
-                break;
+        if (v.getId() == R.id.btn_sign_in) {
+            signIn(edtEmail.getText().toString(), edtPassword.getText().toString());
         }
     }
 
@@ -66,7 +59,6 @@ public class SignInActivity extends AppCompatActivity implements
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             startActivity(new Intent(SignInActivity.this, MainActivity.class));
                             finish();
                         } else {

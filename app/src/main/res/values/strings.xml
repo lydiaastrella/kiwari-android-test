@@ -16,4 +16,8 @@
     <string name="enter_your_email_address">Enter your email address</string>
     <string name="password">Password</string>
     <string name="enter_your_password">Enter your password</string>
+    <string name="chat_room">Chat Room</string>
+    <string name="type_your_message">Type your message</string>
+    <string name="send">SEND</string>
+    <string name="profile_picture">profile picture</string>
 </resources>

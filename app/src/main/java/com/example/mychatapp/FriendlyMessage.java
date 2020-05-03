@@ -6,7 +6,6 @@ public class FriendlyMessage {
     private String name;
     private String time;
     private String photoUrl;
-    private String imageUrl;
 
     public FriendlyMessage() {
     }
@@ -16,7 +15,6 @@ public class FriendlyMessage {
         this.name = name;
         this.time = time;
         this.photoUrl = photoUrl;
-        this.imageUrl = imageUrl;
     }
 
     public String getId() {
@@ -57,13 +55,5 @@ public class FriendlyMessage {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }
