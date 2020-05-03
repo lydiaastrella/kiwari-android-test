@@ -26,15 +26,10 @@ public class SignInActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = "SignInActivity";
-    private static final int RC_SIGN_IN = 9001;
 
-    //private SignInButton mSignInButton;
     private Button btnSignIn;
     private EditText edtEmail, edtPassword;
 
-    private GoogleApiClient mGoogleApiClient;
-
-    // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
 
     @Override
@@ -43,24 +38,12 @@ public class SignInActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_sign_in);
 
         // Assign fields
-        //mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
         btnSignIn = findViewById(R.id.btn_sign_in);
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
 
         // Set click listeners
-        //mSignInButton.setOnClickListener(this);
         btnSignIn.setOnClickListener(this);
-
-        // Configure Google Sign In
-        /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();*/
 
         // Initialize FirebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -84,7 +67,6 @@ public class SignInActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            //updateUI(user);
                             startActivity(new Intent(SignInActivity.this, MainActivity.class));
                             finish();
                         } else {
